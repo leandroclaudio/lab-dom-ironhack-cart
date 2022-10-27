@@ -1,42 +1,76 @@
-// ITERATION 1
+const linha = document.querySelector('.product');
+const clone = linha.cloneNode(true);
+
 
 function updateSubtotal(product) {
-  console.log('Calculating subtotal, yey!');
-
-  //... your code goes here
+  const price = product.querySelector('.price span')
+  const quantity = product.querySelector('.quantity input')
+  const subtotal = product.querySelector('.subtotal span')
+  subtotal.innerText = +price.innerText * +quantity.value
+  return (+price.innerText * +quantity.value)
 }
+
 
 function calculateAll() {
-  // code in the following two lines is added just for testing purposes.
-  // it runs when only iteration 1 is completed. at later point, it can be removed.
-  const singleProduct = document.querySelector('.product');
-  updateSubtotal(singleProduct);
-  // end of test
-
-  // ITERATION 2
-  //... your code goes here
-
-  // ITERATION 3
-  //... your code goes here
+  const products = document.getElementsByClassName('product')
+  let sum = 0;
+  const total = document.querySelector('#total-value span')
+  for (let i = 0; i < products.length; i++) { sum += updateSubtotal(products[i]) }
+  total.innerText = sum
 }
-
-// ITERATION 4
 
 function removeProduct(event) {
-  const target = event.currentTarget;
-  console.log('The target in remove is:', target);
-  //... your code goes here
+  event.currentTarget.parentNode.parentNode.remove()
+  calculateAll()
 }
 
-// ITERATION 5
 
-function createProduct() {
-  //... your code goes here
+function createProduct(clone) {
+  //GET OBJETOS NAS VARIAVEIS
+  const productName = document.querySelector('.create-product td input[type=text]').value;
+  const productPrice = document.querySelector('.create-product td input[type=number').value;
+
+
+  //GET TABELA E LINHA
+  const tabela = document.querySelector('tbody');
+
+  //CLONE 
+  clone = linha.cloneNode(true);
+
+  clone.querySelector('.name span').innerHTML = productName;
+  clone.querySelector('.price span').innerHTML = productPrice;
+  // Limpa os campos Quantitu e Subtotal 
+  clone.querySelector('.quantity input').value = 0;
+  clone.querySelector('.subtotal span').innerHTML = 0;
+
+  tabela.appendChild(clone);
+
+  //Adicionar Event Listener no botão criado
+  const btnRemove = clone.children[4].firstElementChild
+  btnRemove.addEventListener('click', removeProduct);
+
+}
+
+function removerComentarios() {
+  newTfoot = document.querySelector("tfoot").innerHTML.slice(14, 399) //não faça isso em producao
+  document.querySelector("tfoot").remove()
+  d1 = document.getElementById("cart").appendChild(document.createElement('tfoot'))
+  d1.insertAdjacentHTML('afterend', newTfoot);
+  
 }
 
 window.addEventListener('load', () => {
+  removerComentarios()
+
   const calculatePricesBtn = document.getElementById('calculate');
   calculatePricesBtn.addEventListener('click', calculateAll);
 
-  //... your code goes here
-});
+  //BUSCA CREATED
+  const createProductBtn = document.querySelector('#create');
+  createProductBtn.addEventListener('click', createProduct);
+
+  //BUSCA BOTAO REMOVER 
+  const btnRemove = document.querySelectorAll('.btn-remove')
+  btnRemove.forEach(btn => btn.addEventListener('click', removeProduct));
+
+})
